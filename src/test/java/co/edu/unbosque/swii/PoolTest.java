@@ -19,13 +19,13 @@ import org.testng.annotations.Test;
  */
 public class PoolTest {
     
-        public static final String pwd="xxxxxxxx";
+        public static final String pwd="p_5t6TsJu8";
 
     @Test(expectedExceptions =org.postgresql.util.PSQLException.class,
             expectedExceptionsMessageRegExp = ".*too many connections.*"
             )
     public void soloDebeCrear5Conexiones() throws Exception{
-        FabricaConexiones fc=new FabricaConexiones("aretico.com",5432,"software_2","grupo8_5",pwd);
+        FabricaConexiones fc=new FabricaConexiones("aretico.com",5432,"software_2","grupo7_5",pwd);
         ObjectPool<Connection> pool=new GenericObjectPool<Connection>(fc);
         for (int i = 0; i < 6; i++) {
             pool.borrowObject();           
@@ -34,7 +34,7 @@ public class PoolTest {
     
     @Test
     public void aprendiendoAControlarLasConexiones() throws Exception{
-        FabricaConexiones fc=new FabricaConexiones("aretico.com",5432,"software_2","grupo8_5",pwd);
+        FabricaConexiones fc=new FabricaConexiones("aretico.com",5432,"software_2","grupo7_5",pwd);
         ObjectPool<Connection> pool=new GenericObjectPool<Connection>(fc);
         for (int i = 0; i < 6; i++) {
             Connection c=pool.borrowObject();
@@ -43,8 +43,13 @@ public class PoolTest {
     }
     
     @Test
-    public void quePasaCuandoSeCierraUnaConexionAntesDeRetornarla(){
-        
+    public void quePasaCuandoSeCierraUnaConexionAntesDeRetornarla() throws Exception{
+        FabricaConexiones fc=new FabricaConexiones("aretico.com",5432,"software_2","grupo7_5",pwd);
+        ObjectPool<Connection> pool=new GenericObjectPool<Connection>(fc);
+        for (int i = 0; i < 6; i++) {
+            Connection c=pool.borrowObject();
+            pool.returnObject(c);
+        }      
     }
     
     @Test

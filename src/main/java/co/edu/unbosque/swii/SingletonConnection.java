@@ -12,12 +12,12 @@ public class SingletonConnection {
     private static Connection connection;
     private static final Boolean control=true;
 
-    private SingletonConnection() throws ClassNotFoundException, SQLException {
+    public SingletonConnection() throws ClassNotFoundException, SQLException {
         Class.forName("org.postgresql.Driver");
         String url="jdbc:postgresql://host:5432/software_2";
         synchronized (control) {
             if(connection!=null) return;
-            connection = DriverManager.getConnection(url, "grupo8", "xxxxxxx");
+            connection = DriverManager.getConnection(url, "grupo7", "p_5t6TsJu8");
         }
     }
     public static Connection getConnection() throws ClassNotFoundException, SQLException {

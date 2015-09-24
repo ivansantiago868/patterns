@@ -6,6 +6,8 @@
 package co.edu.unbosque.swii;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import org.apache.commons.pool2.BaseObjectPool;
 import org.apache.commons.pool2.KeyedObjectPool;
 import org.apache.commons.pool2.ObjectPool;
@@ -20,6 +22,7 @@ import org.testng.annotations.Test;
 public class PoolTest {
     
         public static final String pwd="p_5t6TsJu8";
+        public static final int Total=1000;
 
     @Test(expectedExceptions =org.postgresql.util.PSQLException.class,
             expectedExceptionsMessageRegExp = ".*too many connections.*"
@@ -58,12 +61,24 @@ public class PoolTest {
     }
     
     @Test(threadPoolSize = 5, invocationCount = 5)
-    public void midaTiemposParaInsertar1000RegistrosConSingleton(){
-        
+    public void midaTiemposParaInsertar1000RegistrosConSingleton() throws ClassNotFoundException, SQLException{
+       
     }
     
     @Test(threadPoolSize = 5, invocationCount = 5)
-    public void midaTiemposParaInsertar1000RegistrosConObjectPool(){
+    public void midaTiemposParaInsertar1000RegistrosConObjectPool(int Total) throws ClassNotFoundException, SQLException{
+        long tiempo = System.currentTimeMillis();
+        String SQL;
+        for(int x=0; x < Total ;x ++)
+        {
+            Connection conec = SingletonConnection.getConnection();
+            SQL="INSERT INTO grupo7.RegistroHilos( registro, hilo, fecha) VALUES (?, ?, now());";
+            PreparedStatement parametros = conec.prepareStatement(SQL);
+            parametros.setInt(1, x);
+            parametros.setInt(2,(int)Thread.currentThread().getId() );
+            parametros.executeUpdate();
+        }
+        System.out.println("Tiempo de ejecucion "+(System.currentTimeMillis()-tiempo));
         
     }
 }

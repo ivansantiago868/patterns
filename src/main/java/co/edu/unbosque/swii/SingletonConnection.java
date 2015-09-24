@@ -14,7 +14,7 @@ public class SingletonConnection {
 
     public SingletonConnection() throws ClassNotFoundException, SQLException {
         Class.forName("org.postgresql.Driver");
-        String url="jdbc:postgresql://host:5432/software_2";
+        String url="jdbc:postgresql://aretico.com:5432/software_2";
         synchronized (control) {
             if(connection!=null) return;
             connection = DriverManager.getConnection(url, "grupo7", "p_5t6TsJu8");

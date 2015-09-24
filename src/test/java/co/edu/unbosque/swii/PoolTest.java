@@ -98,6 +98,5 @@ public class PoolTest {
             parametros.executeUpdate();
         }
         System.out.println("Tiempo de ejecucion "+(System.currentTimeMillis()-tiempo));
-        
     }
 }

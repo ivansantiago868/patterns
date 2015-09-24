@@ -56,20 +56,39 @@ public class PoolTest {
     }
     
     @Test
-    public void quePasaCuandoSeRetornaUnaconexionContransaccionIniciada(){
-        
+    public void quePasaCuandoSeRetornaUnaconexionContransaccionIniciada() throws Exception{
+        FabricaConexiones fc=new FabricaConexiones("aretico.com",5432,"software_2","grupo7_5",pwd);
+        ObjectPool<Connection> pool=new GenericObjectPool<Connection>(fc);
+            Connection c=pool.borrowObject();
+            c.close();
+            pool.returnObject(c);
+            
     }
     
     @Test(threadPoolSize = 5, invocationCount = 5)
-    public void midaTiemposParaInsertar1000RegistrosConSingleton() throws ClassNotFoundException, SQLException{
-       
+    public void midaTiemposParaInsertar1000RegistrosConSingleton() throws ClassNotFoundException, SQLException, Exception{
+       long tiempo = System.currentTimeMillis();
+        String SQL;
+        for(int x=0; x < 1000 ;x ++)
+        {
+            FabricaConexiones fc=new FabricaConexiones("aretico.com",5432,"software_2","grupo7_5",pwd);
+            ObjectPool<Connection> pool=new GenericObjectPool<Connection>(fc);
+            Connection c=pool.borrowObject();
+            SQL="INSERT INTO grupo7.RegistroHilos( registro, hilo, fecha) VALUES (?, ?, now());";
+            PreparedStatement parametros = c.prepareStatement(SQL);
+            parametros.setInt(1, x);
+            parametros.setInt(2,(int)Thread.currentThread().getId() );
+            parametros.executeUpdate();
+            pool.returnObject(c);
+        }
+        System.out.println("Tiempo de ejecucion "+(System.currentTimeMillis()-tiempo));
     }
     
     @Test(threadPoolSize = 5, invocationCount = 5)
-    public void midaTiemposParaInsertar1000RegistrosConObjectPool(int Total) throws ClassNotFoundException, SQLException{
+    public void midaTiemposParaInsertar1000RegistrosConObjectPool() throws ClassNotFoundException, SQLException{
         long tiempo = System.currentTimeMillis();
         String SQL;
-        for(int x=0; x < Total ;x ++)
+        for(int x=0; x < 1000 ;x ++)
         {
             Connection conec = SingletonConnection.getConnection();
             SQL="INSERT INTO grupo7.RegistroHilos( registro, hilo, fecha) VALUES (?, ?, now());";
